@@ -1,0 +1,14 @@
+<html><head><script>
+function abre(prog,url){
+	var shell = new ActiveXObject("WScript.shell");
+	shell.run(prog+" "+url);
+	shell.Quit;
+	shell = null;
+	window.close();
+}
+</script>
+</head>
+<body onload='abre("swriter.exe "+urlDav+"","")'>
+Su navegador no soporta ActiveX
+</body>
+</html>
