@@ -1,0 +1,38 @@
+
+	<div class="container">
+		<div class="row"><h3><i class="glyphicon glyphicon-list-alt"></i> NUEVO DOCUMENTO {{user.attr.DATABASE.FILENAME}}</h3></div>
+		<div class="row">
+			<div class="col-md-2"><label>DBID:</label> {{dataModelo.ID_DB}}</div>
+			<div class="col-md-4"><label>UNID:</label> {{dataModelo.ID}}</div>
+			<div class="col-md-4"><label>NOMBRE:</label> {{dataModelo.FILENAME}}</div>
+		</div>
+		<div class="row">PARAMS:
+			<div class="col-md-12">{{params}}</div>
+		</div>
+		<div class="row">DATA:
+			<div class="col-md-12">{{data}}</div>
+		</div>
+		<div class="row">DEPS:
+			<div class="col-md-12">{{dependencias}}</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2"><button class="btn btn-warning" ng-click="openLupaModelos()">Selecciona Modelo</button></div>
+		</div>
+		<div class="row">
+			<div class="col-md-2"><label>NOMBRE DEL DOCUMENTO:</label><input type=text ng-model="fileName"></div>
+		</div>
+		<div class="row"><hr/></div>
+		<div class="row">
+			<div class="row" ng-repeat="(key, value) in dependencias">
+				<div class="col-md-12">
+					<strong>{{key}}</strong>: <input type=text ng-model="dependencias[key]"><br/>
+				</div>
+			</div>
+		</div>
+		<div class="row"><hr/></div>
+		<div class="row">
+			<div class="col-md-2"><button class="btn btn-success" ng-click="crear()">ObtenerDatos</button></div>
+			<div class="col-md-2"><button class="btn btn-success" ng-click="crearDocumento()">Crear</button></div>
+		</div>
+		
+	</div>

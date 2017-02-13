@@ -1,0 +1,22 @@
+
+
+					<div class="row">
+						<div class="col-md-2" ng-repeat="att in data">
+							<span class="glyphicon glyphicon-file">{{att}}</span>
+							<button ng-show="options.view" type="button" class="btn btn-success btn-xs" ng-click="verAttachment(att)">
+								<span class="glyphicon glyphicon-download"></span> Ver
+							</button>
+							<button ng-show="options.edit" type="button" class="btn btn-warning btn-xs" ng-click="editarAttachment(att)">
+								<span class="glyphicon glyphicon-pencil"></span> Editar
+							</button>
+							<button ng-show="options.update" type="button" class="btn btn-warning btn-xs" ng-click="actualizarAttachment(att)">
+								<span class="glyphicon glyphicon-pencil"></span> Actualizar
+							</button>
+							<button ng-show="options.pdf" type="button" class="btn btn-warning btn-xs" ng-click="getPDF(att)">
+								<span class="glyphicon glyphicon-pencil"></span> PDF
+							</button>
+							<button ng-show="options.delete" type="button" class="btn btn-danger btn-xs" ng-click="eliminarAttachment(att)">
+								<span class="glyphicon glyphicon-trash"></span> Eliminar
+							</button>
+						</div>
+					</div>
