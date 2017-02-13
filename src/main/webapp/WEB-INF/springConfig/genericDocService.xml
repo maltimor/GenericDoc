@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="TOpenOffice" class="es.maltimor.genericDoc.openOffice.TOpenOffice">
+		<property name="sConnectionString" value="${ooConnectionString}"></property>
+		<property name="identificador" value="${appName}"></property>
+	</bean>
+
+ 	<bean id="genericDocService" class="es.maltimor.genericDoc.service.GenericDocService">
+		<property name="service" ref="genericDocServiceDao"/>
+		<property name="userDao" ref="userDao"/>
+	</bean>
+	<bean id="genericDocServiceDao" class="es.maltimor.genericDoc.dao.GenericDocServiceDaoImpl">
+		<property name="mapper" ref="genericDocServiceMapper"></property>
+		<property name="gservice" ref="genericServiceDao"></property>
+		<property name="attachService" ref="attachmentServiceDao"></property>
+		<property name="tempPath" value="${tempPath}" />
+	</bean>
+	<bean id="genericDocServiceMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="es.maltimor.genericDoc.dao.GenericDocServiceMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+</beans>

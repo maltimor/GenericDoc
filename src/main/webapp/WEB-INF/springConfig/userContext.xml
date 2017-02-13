@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/jdbc     
+        http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd">
+
+	<bean id="userDao" class="es.maltimor.genericUser.UserDaoCache">
+		<property name="userDao" ref="userDaoImpl"></property>
+		<property name="expiration" value="${userDao.expiration}"></property>
+	</bean>
+
+	<bean id="userDaoImpl" class="es.maltimor.genericUser.UserDaoImplMock">
+		<property name="defaultUser" value="ADMIN" />
+		<property name="separator" value="," />
+  		<property name="defaultRoles" value="ADMIN,GESTOR,CONSULTOR" />
+  		<property name="attr"><map>
+				<entry key="ENTORNO" value="PRUEBAS" />
+				<entry key="DNI" value="00000000T" />
+				<entry key="NOMBRE" value="Nombre" />
+				<entry key="APELLIDO1" value="Apellido1" />
+				<entry key="APELLIDO2" value="Apellido2" />
+				<entry key="PERFIL" value="" />
+				<entry key="DATABASE" value="" />
+				<entry key="PROCESOS"><list>
+					<value>INSERTAR</value>
+					<value>BORRAR</value>
+					<value>MODIFICAR</value>
+					<value>VER</value>
+					<value>EJECUTAR</value>
+				</list></entry>
+				<entry key="DATABASES"><list>
+					<map><entry key="ID" value="1"></entry><entry key="FILENAME" value="Sanciones"></entry></map>
+					<map><entry key="ID" value="2"></entry><entry key="FILENAME" value="Cooperativas"></entry></map>
+				</list></entry>
+		</map></property>
+  		<property name="preferencesMapping"><map>
+				<entry key="PERFIL" value="PERFIL" />
+				<entry key="DATABASE" value="DATABASE" />
+		</map></property>
+	</bean>
+
+	<alias name="userDaoImpl" alias="userPreferencesDao"/>
+		
+</beans>

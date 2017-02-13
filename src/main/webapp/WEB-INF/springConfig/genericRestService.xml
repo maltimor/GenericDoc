@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+ 	<bean id="genericService" class="es.maltimor.genericRest.GenericService">
+		<property name="service" ref="genericServiceDao"/>
+		<property name="userDao" ref="userDao"/>
+		<property name="securityDao" ref="securityDao"/>
+		<property name="app" value="${appName}"/>
+	</bean>
+	<bean id="genericServiceDao" class="es.maltimor.genericRest.GenericServiceDaoImpl">
+		<property name="mapper" ref="genericServiceMapper"></property>
+		<property name="info" ref="genericMapperInfo"></property>
+	</bean>
+	<bean id="genericServiceMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="es.maltimor.genericRest.GenericServiceMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="contextAware" class="es.maltimor.springUtils.ContextAware"></bean>
+	
+	<bean id="resolver" class="es.maltimor.genericRest.GenericMapperInfoTableResolverImpl"></bean>
+	<bean id="secResolver" class="es.maltimor.genericRest.GenericMapperSecurityTableResolverImpl">
+		<property name="defaultResponse" value="true" />
+	</bean>
+	
+	<bean id="genericMapperInfo" class="es.maltimor.genericRest.GenericMapperInfo" depends-on="jdbcBridge,contextAware">
+		<property name="driver" value="${dao.dialect}" />
+		<property name="defaultResolver" ref="resolver" />
+		<property name="defaultSecResolver" ref="secResolver" />
+		<property name="dbInfo" ref="dbInfo" />
+		<property name="info">
+			<value>
+			</value>
+		</property>
+		<property name="security">
+			<value>
+			</value>
+		</property>
+	</bean>
+
+	<bean id="dbInfo" class="es.maltimor.genericRest.GenericDatabaseInfo">
+		<property name="mapper" ref="dbInfoMapper"></property>
+		<property name="resourceTable" value="G_SERVICES"></property>
+ 		<property name="defaultResolver" value="dbResolver"></property>
+		<property name="defaultSecResolver" value="secResolver"></property>
+	</bean>
+	<bean id="dbResolver" class="es.maltimor.genericRest.resolvers.BasicDatabaseResolver">
+		<property name="mapper" ref="dbResolverMapper"></property>
+		<property name="resourceTable" value="G_SERVICES"></property>
+	</bean>	
+	<bean id="dbInfoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="es.maltimor.genericRest.GenericDatabaseMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="dbResolverMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="es.maltimor.genericRest.resolvers.BasicDatabaseMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+</beans>

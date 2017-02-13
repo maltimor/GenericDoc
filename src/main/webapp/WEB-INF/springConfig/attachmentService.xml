@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+ 	<bean id="attachmentService" class="es.maltimor.genericDoc.service.AttachmentService">
+		<property name="service" ref="attachmentServiceDao"/>
+		<property name="userDao" ref="userDao"/>
+		<property name="tempPath" value="${tempPath}" />
+		<property name="urlWebDav" value="${urlWebDav}" />
+		<property name="editAttachment" value="${editAttachment}" />
+	</bean>
+	<bean id="attachmentServiceDao" class="es.maltimor.genericDoc.dao.AttachmentServiceDaoImpl">
+		<property name="dirContext">
+			<bean class="org.apache.naming.resources.FileDirContext">
+				<property name="docBase" value="${attachDocBase}"></property>
+			</bean>
+		</property>
+	</bean>
+
+</beans>

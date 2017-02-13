@@ -1,0 +1,27 @@
+<html><head>
+<script src="/genericDoc/lib/js/jquery.js" ></script>
+</head>
+<body>
+Si esta viendo este mensaje es porque ha habido un error al intentar abrir con OpenOffice esta url: $$
+<br>
+Posiblemente el servidor de comandos no se est&eacute; ejecutando.<br>
+Pulse en este enlace para descargar la aplicaci&oacute;n <a href="/genericDoc/app/mysetup.exe">mysetup.exe</a><br>
+y presione F5 para continuar con la edici&oacute;<br>
+
+<script>
+var url = encodeURIComponent("$$");
+$.ajax({
+	  type: "POST",
+	  url: "http://localhost:9000/restService/swriter?url="+url,
+	  data: {},
+	  success: function(){
+		  window.close();
+	  },
+	  error: function(){
+		  console.log("error");
+	  },
+	  dataType: "json"
+	});
+</script>
+</body>
+</html>

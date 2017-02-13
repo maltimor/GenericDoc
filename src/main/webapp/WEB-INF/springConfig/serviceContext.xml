@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- do not use import statements if CXFServlet init parameters link to this beans.xml -->
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<bean id="jacksonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+
+	<bean class="org.apache.cxf.jaxrs.JAXRSServerFactoryBean" init-method="create">
+		<property name="address" value="/"/>
+		<property name="provider" ref="jacksonProvider" />
+		<property name="serviceBeans" ref="serviceBeansList" />
+	</bean>
+	
+	<bean id="serviceBeansList" class="es.maltimor.springUtils.ListMerge">
+		<constructor-arg ref="serviceBeansListApp"/>
+		<property name="sourceList">
+			<list value-type="java.lang.Object">
+				<ref bean="logoutService" />
+				<ref bean="reloadService" />
+				<ref bean="infoService" />
+				<ref bean="preferencesService" />
+ 				<ref bean="genericService" />
+ 				<ref bean="genericDocService" />
+ 				<ref bean="attachmentService" />
+			</list>
+		</property>
+	</bean>
+</beans>

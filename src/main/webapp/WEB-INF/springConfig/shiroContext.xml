@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="${casServerPrefix}/login?service=${casService}" />
+		<property name="successUrl" value="/" />
+		<property name="unauthorizedUrl" value="/error.html" />
+		<property name="filterChainDefinitions">
+			<value>
+				/shiro-cas = casFilter
+				/webdav/** = anon
+				/**/*.js = anon
+				/** = roles[ROLE_USER]
+			</value>
+		</property>
+	</bean>
+	<bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
+		<property name="failureUrl" value="/error.html"></property>
+	</bean>
+ 	
+	<bean id="casSubjectFactory" class="org.apache.shiro.cas.CasSubjectFactory" />
+
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager" />
+
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+ 		<property name="realm" ref="casRealm" />
+		<property name="subjectFactory" ref="casSubjectFactory" />
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+	
+	<bean id="casRealm" class="org.apache.shiro.cas.CasRealm">
+		<property name="defaultRoles" value="ROLE_USER" />
+		<property name="casServerUrlPrefix" value="${casServerPrefix}" />
+		<property name="casService" value="${casService}" />
+	</bean>	
+	
+	<!-- Enable Shiro Annotations for Spring-configured beans.  Only run after -->
+	<!-- the lifecycleBeanProcessor has run: -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		    <property name="securityManager" ref="securityManager"/>
+	</bean>
+</beans>
