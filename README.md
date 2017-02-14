@@ -1,0 +1,2 @@
+# GenericDoc
+generation of documents
