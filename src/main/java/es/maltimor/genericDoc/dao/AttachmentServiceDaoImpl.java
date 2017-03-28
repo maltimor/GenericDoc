@@ -15,6 +15,8 @@ import org.apache.naming.resources.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import es.maltimor.genericDoc.utils.FilesUtils;
+
 public class AttachmentServiceDaoImpl implements AttachmentServiceDao {
 	final Logger log = LoggerFactory.getLogger(AttachmentServiceDaoImpl.class);
 	private DirContext dirContext;
