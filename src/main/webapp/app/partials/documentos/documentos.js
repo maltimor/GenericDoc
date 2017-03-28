@@ -80,13 +80,26 @@ angular.module('app.documentos')
 	}
 	$scope.volver = function() {
 		if ($scope.params.url!=undefined) {
+			var url = $scope.params.url;
+			console.log(url);
+			
+			var query=window.location.href;
+			var i1=query.indexOf('?');
+			if (i1>0) url+=query.substr(i1);
+
+			console.log(url);
+			console.log($location.search());
+		}
+		
+		
+/*		if ($scope.params.url!=undefined) {
 			window.location.href=$scope.params.url;
 			return;
 		}
 		
 		$scope.dataSel={};
 		$scope.showCategoria=false;
-		mostrarDatos();
+		mostrarDatos();*/
 		//no cambio de hoja
 	}
 	$scope.sortSrc = function(param){
@@ -189,6 +202,14 @@ angular.module('app.documentos')
 	
 	if (!$routeParams.unid) mostrarDatos()
 	else {
+		console.log('===============DOCUMENTOS========================');
+		console.log(window.location);
+		console.log(window.location.href);
+		console.log(window.location.hash);
+		console.log($location.search());
+		console.log($location.path());
+		console.log('=======================================');
+		
 		//caso especial donde routeParams tiene valor
 		$scope.apiApp.get({id:$routeParams.unid},function(data){
 			$scope.ver(data);

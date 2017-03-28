@@ -109,10 +109,25 @@ angular.module('app.newDoc')
 			var url = '/documentos/'+data.ID_DB+'/'+data.ID;
 			//aqui se pasan los parametros del servicio a la otra pantalla
 			//url: url de vuelta a la aplicacion llamante
-			if ($scope.params.url!=undefined) {
+			/*if ($scope.params.url!=undefined) {
 				url+='?url='+encodeURIComponent($scope.params.url)
 				if ($scope.params.url!=undefined) url+='?url='+encodeURIComponent($scope.params.url)
-			}
+			}*/
+			
+			//a url le añado el id_db y el id del doc y todo lo que hubiera en la query
+			url+='?ID_DB='+data.ID_DB+'&ID_DOC='+data.ID;
+			var query=window.location.href;
+			var i1=query.indexOf('?');
+			if (i1>0) url+='&'+query.substr(i1+1);
+			
+			console.log('=================NEW DOC======================');
+			console.log(url);
+			console.log(window.location);
+			console.log(window.location.href);
+			console.log(window.location.hash);
+			console.log($location.search());
+			console.log($location.path());
+			console.log('=======================================');
 			$location.url(url);
 		}, $rootScope.overlay.errorManager);
 	}
