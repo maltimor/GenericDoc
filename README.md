@@ -15,7 +15,7 @@ La idea principal es que los modelos están compuestos por secciones lo que perm
 
 Una sección es un documento Open/Libre Office que contiene parte del documento que se quiere configurar. Además de texto, tablas, imágenes (toda la funcionalidad que ofrece el editor de textos), se insertan cadenas de texto con una sintaxis especial que es la que permite la combinación de datos con el texto que se está formando.
 
-La sintaxis va a permitir:
+La sintaxis #!...# va a permitir:
 
 * Recuperar datos del json y combinarlos en el documento
 * Transformar los datos y darles formato: expresiones, fechas, currency.
@@ -24,13 +24,35 @@ La sintaxis va a permitir:
 * declaración de otros datos a partir de los iniciales: sumas, totales....
 
 
-## Alta de un servicio
+## Creacion de un modelo
 
-La pantalla de un servicio facilita su mantenimiento. Desde aquí se define el servicio REST, su
-comportamiento y la seguridad de acceso al servicio como de los datos a los que se puede acceder.
+La mínima configuración para definir un modelo es ponerke un nombre y seleccionar las secciones que lo va a componer en el orden necesario.
 
-![GitHub Logo](http://www.subirimagenes.com/imagedata.php?url=http://s2.subirimagenes.com/otros/9649202imagenservicio.jpg)
+Adicionalmente se puede  definir los estados en los que ese modelo puede estar y cual es el estado inicial de un documento generado a partir de ese modelo.
 
-A continuación se describe cada uno de los campos:
+Otras funciones son:
 
-* TABLE_NAME: nombre público del servicio. Es la etiqueta con la que se identifica cada servicio.
+* Agrupar modelos similares por tipo.
+* Definir qué parcial de Angular es el responsable de la visualizar el documento generado
+* Establecer el icono por defecto con el que se visualizará el documento.
+* Asignar un conjunto de datos de ejemplo para poder desarrollar el modelo sin conexión a base de datos.
+
+![modelo](img/Modelo.png)
+
+## Creación de una sección
+
+Para crear una sección simplemente hay que ponerle un nombre y adjuntar un fichero Open/Libre Office. Dentro de dicho fichero se almacena parte de la plantilla que se pretende diseñar.
+
+Adicionalmente, en una sección se pueden especificar variables (dependencias) que no tienen porqué estar en el json de datos en el momento de la combinación.
+
+![seccion](img/Seccion.png)
+
+## Formato de los comandos #!..#
+
+Dentro del documento se pueden insertar comandos que permitirán la manipulación de datos y dar forma al documento final.
+
+Cada comando comienza con el prefijo #! y termina con el caracter # y tiene esta estructura: #!Accion# o #!Accion parametros#
+
+
+
+!
