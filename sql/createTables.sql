@@ -8,6 +8,8 @@ drop sequence SEQ_GENERIC;
 create table DOC (
 	ID varchar2(256),
 	ID_DB varchar2(256),
+	ID_MODELO varchar2(256),
+	FILENAME varchar2(256),
 	TXT clob,
 	HTML clob
 );
@@ -19,7 +21,8 @@ create table SECCION (
 	DEPENDENCIAS varchar2(4000),
 	TXT clob,
 	HTML clob
-);
+	CREATION date DEFAULT SYSDATE, 
+	MODIFIED date DEFAULT SYSDATE);
 
 create table MODELO (
 	ID varchar2(256),
@@ -27,7 +30,15 @@ create table MODELO (
 	FILENAME varchar2(1024),
 	DATA_EXAMPLE clob,
 	TXT clob,
-	HTML clob
+	HTML clob,
+	ENTRADASALIDADEFECTO varchar2(256), 
+	ESTADODEFECTO varchar2(256), 
+	ESTADOS varchar2(1024), 
+	TIPO varchar2(256), 
+	ICONODEFECTO number, 
+	PARCIAL varchar2(256), 
+	CREATION date DEFAULT SYSDATE, 
+	MODIFIED date DEFAULT SYSDATE	
 );
 
 create table MODELO_SECCION (
