@@ -68,6 +68,13 @@ Esta es una lista de los comandos implementados:
 * #!If expr1(=|<|>|<=|>=|<>)expr2# ... #!Else# ... #!EndIf# : Condicional. Permite realizar textos condicionales.
 * #!Declare expr1=expr2# : declaracion de variabl.
 
+Las expresiones tienen las siguientes consideraciones:
+
+* El acceso a los datos usa la semántica "campo.campo\[indice\]"
+* Los objetos arrays del json se extienden con metadatos ".LENGTH", ".LBOUND", ".UBOUND" para poder iterar sobre ellos
+* Actualmente la expresiones sólo son estáticas. No se permiten operaciones
+* Un token acabado en "?" indica el valor de una dependencia
+
 ## API del Servicio
 
 Estos son los servicios Generic_REST definidos: (basePath /services/genericRestService)
@@ -92,15 +99,8 @@ Servicios de gestión de modelos y documentos: (basepath /services/genericDocSer
 * /actualizaModeloSeccion/{dbid}/{unid} : (POST, urlparam: name) actualiza todos los modelos afectados por una seccion
 * /getPDF/{dbid}/{unid} : (POST, urlparam: name,table,addPDF) obtiene el HTML, TXT y opcionalmente el PDF asociado a un documento ODT y actualiza el contenido de dichos campos del documento
 
-
-Para generar un documento en base a un modelo hace falta 
-
-
-
 ## Estructura del fichero json y dependencias
 
-
-## Uso del parcial NewDoc
-
+El json debe ser un objeto, con cualquier cantidad de datos. El almacén de dependencias (variables) se define en la propiedad "dep" del objeto json.
 
 
