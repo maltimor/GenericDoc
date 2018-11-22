@@ -53,6 +53,22 @@ Dentro del documento se pueden insertar comandos que permitirán la manipulació
 
 Cada comando comienza con el prefijo #! y termina con el caracter # y tiene esta estructura: #!Accion# o #!Accion parametros#
 
+Esta es una lista de los comandos implementados:
+
+* #!Traer expresion# : vuelca la evaluacion de la expresion al documento final
+* #!TraerFecha expresion# : la expresion la convierte a un formato fecha "dia del mes de año"
+* #!TraerFechaCorta expresion# : la expresion la convierte a un formato fecha "dd/mm/yyyy"
+* #!TraerMoneda expresion# : la expresion la convierte a un formato "###.###,##"
+* #!Contador# : muestra un valor numerico incrementado cada vez que se invoca, empieza en 1
+* #!FechaActual# : muestra la fecha actual en formato largo
+* #!BeginBlock# : inicio de bloque. Todo lo que se escriba dentro no sale en el documento. Sí se ejecutan las acciones.
+* #!EndBlock# : fin de bloque. Util para formatear código embebido.
+* #!For expr1=expr2:expr3# : inicio de bucle, expr1 es la variable, expr2 y expr3 son los límites. expr2<=expr3
+* #!Next expr# : fin de bucle. Hay que indicar el nombre de la variable. Se permiten bucles anidados.
+* #!If expr1(=|<|>|<=|>=|<>)expr2# ... #!Else# ... #!EndIf# : Condicional. Permite realizar textos condicionales.
+* #!Declare expr1=expr2# : declaracion de variabl.
 
 
-!
+
+
+
