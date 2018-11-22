@@ -68,7 +68,39 @@ Esta es una lista de los comandos implementados:
 * #!If expr1(=|<|>|<=|>=|<>)expr2# ... #!Else# ... #!EndIf# : Condicional. Permite realizar textos condicionales.
 * #!Declare expr1=expr2# : declaracion de variabl.
 
+## API del Servicio
 
+Estos son los servicios Generic_REST definidos: (basePath /services/genericRestService)
+
+* DATABASE, MODELO, SECCION, MODELO_SECCION, DOC : Tablas raw de datos
+* VIEW_MODELOS, VIEW_MODELOS_SECCION, VIEW_SECCION, VIEW_DOCUMENTOS : vistas para facilitar busquedas
+
+Servicios de gestión de anexos: (basePath /services/attachmentService)
+Todos los adjuntos están referenciados con un db_id y un unid
+
+* /addAttachment : (POST, multipart_ form_data, campos: dbid, unid, attach) sube un adjunto 
+* /getAllAttachmentNames/{dbid}/{unid} : (GET) devuelve un array de string con los nombres de los adjuntos/{dbid}/{unid} : (GET) devuelve un array de string con los nombres de los adjuntos
+* /deleteAttachment/{dbid}/{unid} : (DELETE) elimina un adjunto
+* /viewAttachment/{dbid}/{unid} : (GET, urlparam: name) devuelve un adjunto según su nombre
+* /editAttachment/{dbid}/{unid} : (GET, urlparam: name) copia el adjunto a la carpeta temporal y activa la edición
+* /updateAttachment/{dbid}/{unid} : (GET, urlparam: name) actualiza el adjunto con el contenido de su homólogo en la carpeta temporal
+
+Servicios de gestión de modelos y documentos: (basepath /services/genericDocService)
+
+* /instanciarModelo/{dbid}/{unid} : (POST, urlparam: name, body: json) realiza la combinación de un modelo junto con los datos
+* /actualizaModelo/{dbid}/{unid} : (POST, urlparam: name) refresca el adjunto asociado al modelo en base a sus secciones
+* /actualizaModeloSeccion/{dbid}/{unid} : (POST, urlparam: name) actualiza todos los modelos afectados por una seccion
+* /getPDF/{dbid}/{unid} : (POST, urlparam: name,table,addPDF) obtiene el HTML, TXT y opcionalmente el PDF asociado a un documento ODT y actualiza el contenido de dichos campos del documento
+
+
+Para generar un documento en base a un modelo hace falta 
+
+
+
+## Estructura del fichero json y dependencias
+
+
+## Uso del parcial NewDoc
 
 
 
