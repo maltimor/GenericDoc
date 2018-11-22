@@ -6,10 +6,14 @@ import java.io.FileOutputStream;
 import es.maltimor.genericDoc.utils.FilesUtils;
 
 public class Attachment {
+	private long lastModified;
+	private String path;
 	private String name;
 	private byte[] bytes;
 	
 	public Attachment(){
+		this.lastModified=0;
+		this.path="";
 		this.name="";
 		this.bytes = new byte[0];
 	}
@@ -33,5 +37,17 @@ public class Attachment {
 	}
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
+	}
+	public long getLastModified() {
+		return lastModified;
+	}
+	public void setLastModified(long lastModified) {
+		this.lastModified = lastModified;
+	}
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
 	}
 }

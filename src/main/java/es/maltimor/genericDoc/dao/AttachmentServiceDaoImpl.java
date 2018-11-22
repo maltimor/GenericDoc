@@ -10,6 +10,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
+import org.apache.naming.resources.FileDirContext;
 import org.apache.naming.resources.Resource;
 
 import org.slf4j.Logger;
@@ -94,7 +95,13 @@ public class AttachmentServiceDaoImpl implements AttachmentServiceDao {
 					Resource res= (Resource) obj;
 					Attachment attach = new Attachment();
 					attach.setName(fileName);
+					attach.setPath(dbid+separator+unid);
 					attach.setBytes(this.getBytesFromStream(res));
+					if (dirContext instanceof FileDirContext){
+						FileDirContext fc = (FileDirContext) dirContext;
+						File f = new File(fc.getDocBase()+separator+dbid+separator+unid+separator+fileName);
+						attach.setLastModified(f.lastModified());
+					}
 					lres.add(attach);
 					log.debug("--->="+attach.getName());
 				} catch (Exception e){
@@ -178,7 +185,13 @@ public class AttachmentServiceDaoImpl implements AttachmentServiceDao {
 				Resource res= (Resource) obj;
 				Attachment attach = new Attachment();
 				attach.setName(fileName);
+				attach.setPath(dbid+separator+unid);
 				attach.setBytes(this.getBytesFromStream(res));
+				if (dirContext instanceof FileDirContext){
+					FileDirContext fc = (FileDirContext) dirContext;
+					File f = new File(fc.getDocBase()+separator+dbid+separator+unid+separator+fileName);
+					attach.setLastModified(f.lastModified());
+				}
 				return attach;
 			} catch (Exception e){
 				System.out.println("@@@@@@@@@@@@@@@@@@@@@ AttachService.getAttachment:ERROR:"+e.getMessage());

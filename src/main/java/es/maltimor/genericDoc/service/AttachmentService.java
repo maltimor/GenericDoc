@@ -2,12 +2,9 @@ package es.maltimor.genericDoc.service;
 
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.activation.DataHandler;
 import javax.servlet.ServletContext;
@@ -15,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,16 +21,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import es.maltimor.genericDoc.dao.AttachmentServiceDao;
-import es.maltimor.genericDoc.dao.GenericDocServiceDao;
-import es.maltimor.genericDoc.utils.Base64Coder;
 import es.maltimor.genericDoc.utils.FilesUtils;
 import es.maltimor.genericUser.User;
 import es.maltimor.genericUser.UserDao;
@@ -123,6 +113,9 @@ public class AttachmentService {
 				String fieldName = attr.getContentDisposition().getParameter("name");
 
 				String fileName = attr.getContentDisposition().getParameter("filename");
+				//fix para evitar que la extension venga en mayusculas
+				
+				
 				String mimeType = attr.getContentType().toString();
 				DataHandler handler = attr.getDataHandler();
 //				String mimeType = handler.getContentType();
@@ -156,11 +149,11 @@ public class AttachmentService {
 			
 			System.out.println(str);
 			
-			return Response.ok("ok").build();
+			return Response.ok().build();
 		
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 	
@@ -177,7 +170,7 @@ public class AttachmentService {
 			return Response.ok(res).build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 
@@ -191,10 +184,10 @@ public class AttachmentService {
 				return Response.status(HttpServletResponse.SC_UNAUTHORIZED).entity("No tiene permisos").build();
 			}
 			service.deleteAttachment(dbid, unid, name);
-			return Response.ok("ok").build();
+			return Response.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 	
@@ -209,11 +202,11 @@ public class AttachmentService {
 				return Response.status(HttpServletResponse.SC_UNAUTHORIZED).entity("No tiene permisos").build();
 			}
 			es.maltimor.genericDoc.dao.Attachment attach = service.getAttachment(dbid, unid, name);
-			String mimeType = context.getMimeType(attach.getName());
+			String mimeType = context.getMimeType(attach.getName().toLowerCase());
 			return Response.ok(attach.getBytes(),mimeType).build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 	
@@ -229,7 +222,7 @@ public class AttachmentService {
 				return Response.status(HttpServletResponse.SC_UNAUTHORIZED).entity("No tiene permisos").build();
 			}
 			es.maltimor.genericDoc.dao.Attachment attach = service.getAttachment(dbid, unid, name);
-			String mimeType = context.getMimeType(attach.getName());
+			String mimeType = context.getMimeType(attach.getName().toLowerCase());
 
 			//TODO A PIÑON METO EL ACTIVEX DE WScript
 			//TODO Varias versiones:
@@ -244,8 +237,20 @@ public class AttachmentService {
 			//hago la 1a
 			String outputFile = tempPath + File.separator + dbid +File.separator + unid + File.separator+attach.getName();
 			System.out.println("openElement/editElement: outputfile="+outputFile);
-			FilesUtils.preparaPath(outputFile, true);
-			attach.extractFile(outputFile);
+			
+			//aqui es donde debo implementar la logica nueva
+			//debo ver la fecha del attachmen y compararla con la del temporal
+			//debo ver el contenido/el hash
+			//debo ver si existe o no el destino temporal
+			File ftmp = new File(outputFile);
+			if (attach.getLastModified()<ftmp.lastModified()) {
+				System.out.println("NO EDITO!!!!");
+				System.out.println("att:"+attach.getLastModified()+" < tmp: "+ftmp.lastModified());
+			} else {
+				System.out.println("MACHACO");
+				FilesUtils.preparaPath(outputFile, true);
+				attach.extractFile(outputFile);
+			}
 
 			String urlDav = urlWebDav +"/"+dbid+"/"+unid+"/"+attach.getName();
 			System.out.println("openElement/editElement: urlDav="+URLEncoder.encode(urlDav, "UTF-8").replace(" ","%20"));
@@ -261,7 +266,7 @@ public class AttachmentService {
 			return Response.ok(res,"text/html").build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 	
@@ -285,10 +290,10 @@ public class AttachmentService {
 				attach.setName(name);
 				service.addAttachment(dbid, unid, attach);
 				return Response.ok().build();
-			} else return Response.serverError().entity("No se puede actualizar").build();
+			} else return Response.serverError().type("application/text").entity("No se puede actualizar").build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 	

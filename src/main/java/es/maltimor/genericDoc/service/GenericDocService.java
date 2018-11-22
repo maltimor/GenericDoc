@@ -1,38 +1,20 @@
 package es.maltimor.genericDoc.service;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataHandler;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import es.maltimor.genericDoc.dao.GenericDocServiceDao;
-import es.maltimor.genericDoc.utils.Base64Coder;
-import es.maltimor.genericDoc.utils.FilesUtils;
 import es.maltimor.genericUser.User;
 import es.maltimor.genericUser.UserDao;
 
@@ -59,18 +41,18 @@ public class GenericDocService {
 	@POST
 	@Path("/getPDF/{dbid}/{unid}")
 	public Response getAttachment(@PathParam("dbid") String dbid,@PathParam("unid") String unid,
-			@QueryParam("name") String name, @QueryParam("table") String table, @Context ServletContext context){
+			@QueryParam("name") String name, @QueryParam("table") String table, @QueryParam("addPDF") boolean addPDF, @Context ServletContext context){
 		try {
 			User user = userDao.getUser(userDao.getLogin(), "");
 			if (!user.hasRol("ADMIN")) {
 				System.out.println("---- no tiene permisos");
 				return Response.status(HttpServletResponse.SC_UNAUTHORIZED).entity("No tiene permisos").build();
 			}
-			service.getPDF(dbid,unid,name,table);
+			service.getPDF(dbid,unid,name,table,addPDF);
 			return Response.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 
@@ -88,7 +70,25 @@ public class GenericDocService {
 			return Response.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
+		}
+	}
+	
+	@POST
+	@Path("/actualizaModeloSeccion/{dbid}/{unid}")
+	public Response actualizaModeloSeccion(@PathParam("dbid") String dbid,@PathParam("unid") String unid,
+			@QueryParam("name") String name, @Context ServletContext context){
+		try {
+			User user = userDao.getUser(userDao.getLogin(), "");
+			if (!user.hasRol("ADMIN")) {
+				System.out.println("---- no tiene permisos");
+				return Response.status(HttpServletResponse.SC_UNAUTHORIZED).entity("No tiene permisos").build();
+			}
+			service.actualizarModeloSeccion(dbid,unid,name);
+			return Response.ok().build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 	
@@ -106,7 +106,7 @@ public class GenericDocService {
 			return Response.ok(res).build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}
 	}
 	
@@ -131,10 +131,10 @@ public class GenericDocService {
 				attach.setName(name);
 				service.addAttachment(dbid, unid, attach);
 				return Response.ok().build();
-			} else return Response.serverError().entity("No se puede actualizar").build();
+			} else return Response.serverError().type("application/text").entity("No se puede actualizar").build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response.serverError().entity(e.getMessage()).build();
+			return Response.serverError().type("application/text").entity(e.getMessage()).build();
 		}		
 	}*/
 }

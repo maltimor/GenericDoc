@@ -12,7 +12,6 @@ import es.maltimor.genericDoc.openOffice.Compressor;
 import es.maltimor.genericDoc.openOffice.GetPDF2;
 import es.maltimor.genericDoc.openOffice.TOpenOffice;
 import es.maltimor.genericDoc.parser.BasicParser;
-import es.maltimor.genericDoc.parser.BasicParser3;
 import es.maltimor.genericDoc.utils.FilesUtils;
 import es.maltimor.genericRest.GenericServiceDao;
 import es.maltimor.genericUser.User;
@@ -54,7 +53,7 @@ public class GenericDocServiceDaoImpl implements GenericDocServiceDao {
 		return null;
 	}
 
-	public void getPDF(String dbid,String unid,String name,String table) throws Exception {
+	public void getPDF(String dbid,String unid,String name,String table,boolean addPDF) throws Exception {
 		//-------------------------------------------
 		// 4º Llamada a un servlet para generar el PDF, el HTML y el TXT en base al sxw, o bien, alguno de los tres.
 		//-------------------------------------------
@@ -74,6 +73,7 @@ public class GenericDocServiceDaoImpl implements GenericDocServiceDao {
 			if (i1==-1) i1=name.length();
 			String nameTXT = name.substring(0,i1)+".txt";
 			String nameHTML = name.substring(0,i1)+".html";
+			String namePDF = name.substring(0,i1)+".pdf";
 			
 			System.out.println("updateElement: outputfile="+path + nameTXT);
 			byte[] buff = FilesUtils.getBytesFromFile(path + nameTXT);
@@ -90,6 +90,15 @@ public class GenericDocServiceDaoImpl implements GenericDocServiceDao {
 			params.put("txt", txt.substring(0,txt.length()<4000?txt.length():4000));
 			params.put("html", html);
 			mapper.updateHTMLyTXT(params);
+
+			if (addPDF){
+				buff = FilesUtils.getBytesFromFile(path + namePDF);
+				attach = new Attachment();
+				attach.setBytes(buff);
+				attach.setName(namePDF);
+				attachService.addAttachment(dbid, unid, attach);
+			}
+
 		} else throw new Exception("No se ha podido generar el PDF");
 	}
 
@@ -104,7 +113,11 @@ public class GenericDocServiceDaoImpl implements GenericDocServiceDao {
 		System.out.println("Actualiza Modelo:"+dbid+" "+unid+" "+fileName+" "+basePath);
 		
 		List<Map<String,Object>> secciones = gservice.getAll(null, "MODELO_SECCION", "[ID_DB]=="+dbid+" AND [ID_MODELO]=="+unid, 99999, 0, "ORDEN", "ASC", "*", null);
-		if (secciones==null) throw new Exception("El modelo no tiene secciones");
+		if (secciones==null || secciones.size()==0) {
+			//bueno si el modelo no tiene secciones no hago nada
+			return;
+			//throw new Exception("El modelo no tiene secciones");
+		}
 
 		System.out.println("Secciones:"+secciones);
 
@@ -141,6 +154,28 @@ public class GenericDocServiceDaoImpl implements GenericDocServiceDao {
 			attachService.addAttachment(dbid, unid, attach);
 		} else throw new Exception("No se ha podido generar el modelo");
 	}
+
+	public void actualizarModeloSeccion(String dbid, String unid, String fileName) throws Exception {
+		//busco todos los modelos afectados por esta seccion y los actualizo
+		System.out.println("Actualiza Modelo Seccion:"+dbid+" "+unid+" "+fileName);
+		
+		List<Map<String,Object>> modelos = gservice.getAll(null, "MODELO_SECCION", "[ID_DB]=="+dbid+" AND [ID_SECCION]=="+unid, 99999, 0, "ORDEN", "ASC", "*", null);
+		if (modelos==null || modelos.size()==0) {
+			//bueno si el modelo no tiene secciones no hago nada
+			return;
+		}
+
+		System.out.println("Modelos:"+modelos);
+		for(Map<String,Object> modelo:modelos){
+			//localizo el modelo para obtener su nombre
+			String idModelo = (String) modelo.get("ID_MODELO");
+			if (idModelo!=null){
+				Map<String, Object> m = gservice.getById(null, "MODELO", idModelo , null);
+				System.out.println("Actualiza Modelo:"+dbid+" "+idModelo+" "+(String) m.get("FILENAME"));
+				actualizarModelo(dbid, idModelo, (String) m.get("FILENAME"));
+			}
+		}
+	}
 	
 	public Map<String,Object> instanciarModelo(String dbid, String unid, String fileName, Map<String,Object> data) throws Exception {
 		//creo el documento
@@ -153,55 +188,72 @@ public class GenericDocServiceDaoImpl implements GenericDocServiceDao {
 				
 		//extraigo el documento del modelo, lo parseo y lo devuelvo los documentos de las secciones que componen el modelo
 		//se supone que hay uno y lo tomo como valido
-		if (!attachService.hasAttachments(dbid, unid)) throw new Exception("El modelo no está preparado");
-		
-		String basePath = tempPath+separator+dbid+separator+unid_doc+separator;
-		basePath=basePath.replace("\\", "/");
-		String fileNameDoc=basePath+fileName+".odt";		//TODO poner algo en funcion de parametros del modelo
-
-		for(String name:attachService.getAllAttachmentsNames(dbid, unid)){
-			Attachment att = attachService.getAttachment(dbid, unid, name);
-			if (att==null) throw new Exception("No encuentro el adjunto asociado al modelo");
-			att.extractFile(fileNameDoc);
-			break;
+		if (!attachService.hasAttachments(dbid, unid)) {
+			//intento preparar el modelo
+			actualizarModelo(dbid, unid, fileName);
+//			throw new Exception("El modelo no está preparado");
 		}
 		
-		//lo parseo TODO
-		//hago una copia del original
-		FilesUtils.fileCopy(fileNameDoc, basePath+fileName+"ORG.odt");
+		//calculo de nuevo si el modelo tiene adjuntos
+		boolean hasAttachments = attachService.hasAttachments(dbid, unid);
+
+		byte[] buff = null;
+		String basePath = tempPath+separator+dbid+separator+unid_doc+separator;
+		basePath=basePath.replace("\\", "/");
+		String fileNameDoc = basePath+fileName+".odt";		//TODO poner algo en funcion de parametros del modelo
+		//String fileNamePDF = basePath+fileName+".pdf";
+
+		//si tiene adjuntos intento componer un modelo
+		if (hasAttachments){
+	
+			for(String name:attachService.getAllAttachmentsNames(dbid, unid)){
+				Attachment att = attachService.getAttachment(dbid, unid, name);
+				if (att==null) throw new Exception("No encuentro el adjunto asociado al modelo");
+				att.extractFile(fileNameDoc);
+				break;
+			}
+			
+			//lo parseo TODO
+			//hago una copia del original
+			FilesUtils.fileCopy(fileNameDoc, basePath+fileName+"ORG.odt");
+			
+			//lo descomprimo
+			String filePath = basePath+"temp/";
+			Compressor.unzip(filePath, fileNameDoc);
+			//me traigo los dos ficheros
+			FilesUtils.fileCopy(filePath + "styles.xml",  basePath + "stylesORG.xml");
+			FilesUtils.fileCopy(filePath + "content.xml", basePath + "contentORG.xml");
+
+			//creo el objeto parser que será comun en los dos ficheros
+			BasicParser parser = new BasicParser();
+			
+			//parseo los dos ficheros
+			//styles.xml
+			buff = FilesUtils.getBytesFromFile(basePath + "stylesORG.xml");
+			if (buff!=null){
+				String txt = new String(buff,"UTF-8");		//TODO ver la codificacion
+				txt = parser.parse(txt,data);
+				FilesUtils.sendString(basePath + "styles.xml", txt, "UTF-8");
+			} else throw new Exception("No se ha podido componer Styles");
+			
+			//content.xml
+			buff = FilesUtils.getBytesFromFile(basePath + "contentORG.xml");
+			if (buff!=null){
+				String txt = new String(buff,"UTF-8");		//TODO ver la codificacion
+				txt = parser.parse(txt,data);
+				FilesUtils.sendString(basePath + "content.xml", txt, "UTF-8");
+			} else throw new Exception("No se ha podido componer Content");
+			
+			//vuelco los dos ficheros
+			FilesUtils.fileCopy(basePath + "styles.xml",  filePath + "styles.xml");
+			FilesUtils.fileCopy(basePath + "content.xml", filePath + "content.xml");
+			
+			//los vuelvo a comprimir
+			Compressor.zip(filePath, basePath, fileName+".odt");
+		} //fin de hasAttachments
 		
-		//lo descomprimo
-		String filePath = basePath+"temp/";
-		Compressor.unzip(filePath, fileNameDoc);
-		//me traigo los dos ficheros
-		FilesUtils.fileCopy(filePath + "styles.xml",  basePath + "stylesORG.xml");
-		FilesUtils.fileCopy(filePath + "content.xml", basePath + "contentORG.xml");
-		
-		//parseo los dos ficheros
-		//styles.xml
-		byte[] buff = FilesUtils.getBytesFromFile(basePath + "stylesORG.xml");
-		if (buff!=null){
-			String txt = new String(buff,"UTF-8");		//TODO ver la codificacion
-			txt = BasicParser.parse(txt,data);
-			FilesUtils.sendString(basePath + "content.xml", txt, "UTF-8");
-		} else throw new Exception("No se ha podido componer Styles");
-		
-		//content.xml
-		buff = FilesUtils.getBytesFromFile(basePath + "contentORG.xml");
-		if (buff!=null){
-			String txt = new String(buff,"UTF-8");		//TODO ver la codificacion
-			txt = BasicParser.parse(txt,data);
-			FilesUtils.sendString(basePath + "content.xml", txt, "UTF-8");
-		} else throw new Exception("No se ha podido componer Content");
-		
-		//vuelco los dos ficheros
-		FilesUtils.fileCopy(basePath + "styles.xml",  filePath + "styles.xml");
-		FilesUtils.fileCopy(basePath + "content.xml", filePath + "content.xml");
-		
-		//los vuelvo a comprimir
-		Compressor.zip(filePath, basePath, fileName+".odt"); 
-		
-		//creo el documento
+		//creo el documento tenga o no adjuntos
+		System.out.println("### CReando el documento:"+dbid+"-"+unid_doc+"-"+unid+"-"+fileName);
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("dbid",dbid);
 		params.put("unid_doc",unid_doc);
@@ -209,23 +261,36 @@ public class GenericDocServiceDaoImpl implements GenericDocServiceDao {
 		params.put("fileName",fileName);
 		mapper.insertDoc(params);
 		
-		//lo adjunto al documento
-		buff = FilesUtils.getBytesFromFile(fileNameDoc);
-		Attachment attach = new Attachment();
+		//si el modelo tenia adjuntos, lo adjunto al documento
+		if (hasAttachments){
+
+			buff = FilesUtils.getBytesFromFile(fileNameDoc);
+			Attachment attach = new Attachment();
+			attach.setBytes(buff);
+			attach.setName(fileNameDoc);
+			attachService.addAttachment(dbid, unid_doc, attach);
+			
+			getPDF(dbid,unid_doc,fileName+".odt","DOC",false);
+
+		}
+
+/*		//calculo el html y el txt
+		getPDF(dbid,unid_doc,fileName+".odt","DOC");
+
+		buff = FilesUtils.getBytesFromFile(fileNamePDF);
+		attach = new Attachment();
 		attach.setBytes(buff);
-		attach.setName(fileNameDoc);
-		attachService.addAttachment(dbid, unid_doc, attach);
+		attach.setName(fileNamePDF);
+		attachService.addAttachment(dbid, unid_doc, attach);*/
 		
-		//calculo el html y el txt
-		//getPDF(dbid,unid_doc,fileName+".odt","DOC");
-
 		//devuelvo el documento recien insertado
-		params = new HashMap<String,Object>();
-		params.put("dbid",dbid);
-		params.put("unid",unid_doc);
-		Map<String,Object> doc = mapper.getDoc(params);
+//		params = new HashMap<String,Object>();
+//		params.put("dbid",dbid);
+//		params.put("unid",unid_doc);
+//		Map<String,Object> doc = mapper.getDoc(params);
 
-		//Map<String,Object> doc = gservice.getById(null, "DOC", "[ID_DB]=="+dbid+" AND [ID]=="+unid_doc, null);
+//		Map<String,Object> doc = gservice.getById(null, "DOC", "[ID_DB]=="+dbid+" AND [ID]=="+unid_doc, null);
+		Map<String,Object> doc = gservice.getById(null, "DOC", unid_doc, null);
 		if (doc==null) throw new Exception("No se ha podido localizar el documento");
 		return doc;
 	}

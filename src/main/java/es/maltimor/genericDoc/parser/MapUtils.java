@@ -36,6 +36,11 @@ public class MapUtils {
 	}
 
 	public static void recorreList(Map<String,String> res, List<Object> lst, String prefijo) {
+		if (prefijo!=null) {
+			asignaKeyValue(res, prefijo+".LENGTH", lst.size());
+			asignaKeyValue(res, prefijo+".LBOUND", 0);
+			asignaKeyValue(res, prefijo+".UBOUND", lst.size()-1);
+		}
 		for(int i=0;i<lst.size();i++){
 			Object val = lst.get(i);
 			String key = prefijo!=null?prefijo+"["+i+"]":"["+i+"]";
