@@ -7,8 +7,7 @@
 	<packaging>war</packaging>
 	
 	<properties>
-		<genericProjectVersion>1.0.1-SNAPSHOT</genericProjectVersion>
-		<mydom-gebd.version>0.0.1-SNAPSHOT</mydom-gebd.version>
+		<genericProjectVersion>1.0.4-SNAPSHOT</genericProjectVersion>
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<finalName>genericDoc</finalName>
 		<skipTests>true</skipTests>
@@ -102,12 +101,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>es.carm.mydom</groupId>
-			<artifactId>mydom-gebd-jar</artifactId>
-			<version>${mydom-gebd.version}</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.openoffice</groupId>
 			<artifactId>unoil</artifactId>
 			<version>${oo.version}</version>
@@ -131,12 +124,17 @@
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc</artifactId>
 			<version>7</version>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-catalina</artifactId>
 			<version>${tomcatVersion}</version>
 			<scope>provided</scope>
 		</dependency>		
+<dependency>
+    <groupId>xerces</groupId>
+    <artifactId>xercesImpl</artifactId>
+    <version>2.9.1</version>
+</dependency>	
 	</dependencies>
 </project>
