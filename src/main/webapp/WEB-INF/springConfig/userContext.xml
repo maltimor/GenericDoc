@@ -12,7 +12,7 @@
 		<property name="expiration" value="${userDao.expiration}"></property>
 	</bean>
 
-	<bean id="userDaoImpl" class="es.maltimor.genericUser.UserDaoImplMock">
+	<bean id="userDaoImpl" class="es.maltimor.genericDoc.user.UserDaoImplMock">
 		<property name="defaultUser" value="ADMIN" />
 		<property name="separator" value="," />
   		<property name="defaultRoles" value="ADMIN,GESTOR,CONSULTOR" />
@@ -32,8 +32,7 @@
 					<value>EJECUTAR</value>
 				</list></entry>
 				<entry key="DATABASES"><list>
-					<map><entry key="ID" value="1"></entry><entry key="FILENAME" value="Sanciones"></entry></map>
-					<map><entry key="ID" value="2"></entry><entry key="FILENAME" value="Cooperativas"></entry></map>
+					<map><entry key="ID" value="1"></entry><entry key="FILENAME" value="genericDoc"></entry></map>
 				</list></entry>
 		</map></property>
   		<property name="preferencesMapping"><map>

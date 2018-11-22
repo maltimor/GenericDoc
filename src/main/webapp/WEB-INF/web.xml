@@ -102,7 +102,6 @@
  	<servlet>
 		<servlet-name>webdav</servlet-name>
 		<servlet-class>org.apache.catalina.servlets.WebdavServlet</servlet-class>
-<!-- 		<servlet-class>es.carm.mydom.servlet.DominoWebDav</servlet-class> -->
 		<init-param>
 			<param-name>debug</param-name>
 			<param-value>1</param-value>

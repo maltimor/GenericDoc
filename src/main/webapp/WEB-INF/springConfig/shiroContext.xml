@@ -18,7 +18,7 @@
 			</value>
 		</property>
 	</bean>
-	<bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
+	<bean id="casFilter" class="es.maltimor.genericDoc.utils.CasFilterWrapper">
 		<property name="failureUrl" value="/error.html"></property>
 	</bean>
  	
@@ -30,11 +30,16 @@
  		<property name="realm" ref="casRealm" />
 		<property name="subjectFactory" ref="casSubjectFactory" />
 		<property name="cacheManager" ref="cacheManager" />
+		<property name="sessionManager" ref="sessionManager"></property>
 	</bean>
+
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+	</bean>
+
 
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 	
-	<bean id="casRealm" class="org.apache.shiro.cas.CasRealm">
+	<bean id="casRealm" class="es.maltimor.genericDoc.utils.CasRealmWrapper">
 		<property name="defaultRoles" value="ROLE_USER" />
 		<property name="casServerUrlPrefix" value="${casServerPrefix}" />
 		<property name="casService" value="${casService}" />

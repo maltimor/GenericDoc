@@ -6,10 +6,11 @@ Si esta viendo este mensaje es porque ha habido un error al intentar abrir con O
 <br>
 Posiblemente el servidor de comandos no se est&eacute; ejecutando.<br>
 Pulse en este enlace para descargar la aplicaci&oacute;n <a href="/genericDoc/app/mysetup.exe">mysetup.exe</a><br>
-y presione F5 para continuar con la edici&oacute;<br>
-
+y presione F5 para continuar con la edici&oacute;n<br>
+$$
 <script>
 var url = encodeURIComponent("$$");
+console.log(url);
 $.ajax({
 	  type: "POST",
 	  url: "http://localhost:9000/restService/swriter?url="+url,
