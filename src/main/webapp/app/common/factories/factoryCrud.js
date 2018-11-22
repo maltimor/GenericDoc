@@ -230,7 +230,7 @@ angular.module('app').factory('factoryPagCrud', function($rootScope) {
 });
 
 
-angular.module('app').factory('eduOverlayFactory',function(){
+angular.module('app').factory('overlayFactory',function(){
 	var obj = {
 			initOverlayObject: function(scope, timeout){
 				var overlay = {

@@ -8,7 +8,7 @@ angular.module('app.logout')
 	});
 })
 .controller('LogoutCtrl', function($rootScope,$scope,$http,$location,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
 	var apiApp = dataFactoryApp(appConfig.urlBase+'/logout/:id', '');
 	$rootScope.overlay.showOverlay();
 	apiApp.getAll({},function(){
@@ -17,7 +17,7 @@ angular.module('app.logout')
 		var host = $location.host();
 		var port = $location.port();
 		var service = protocol+'://'+host+((port!='80'&&port!='443')?':'+port:'')+'/'+appConfig.urlName;
-		window.location.href="https://cas.murciaeduca.es/cas/logout?service="+service;
+		window.location.href=appConfig.urlCasLogOut+"?service="+service;
 	},$rootScope.overlay.errorManager);
 });
 

@@ -66,7 +66,8 @@ angular.module('app.genericAttachments').directive('genericAttachments', functio
 				var dbid=$scope.options.dbid;
 				var id =$scope.options.unid;
 				var table =$scope.options.table;
-				apiDoc.execute({dbid:dbid,id:id,name:att,table:table},{}, function(data){
+				var addPDF =$scope.options.addPDF;
+				apiDoc.execute({dbid:dbid,id:id,name:att,table:table,addPDF:addPDF},{}, function(data){
 					$rootScope.overlay.hideOverlay();
 					$rootScope.overlay.successMessage("Correcto");
 					$scope.onSuccess();

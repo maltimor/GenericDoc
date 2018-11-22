@@ -11,7 +11,7 @@ angular.module('app.documentos')
 	})
 })
 .controller('DocumentosCtrl', function($rootScope,$scope,$http,$location,$route,lupaFactory,$sce,$routeParams,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
 	
 	//compruebo que tengo el rol requerido para dicha pantalla
 	if (!$rootScope.checkAnyPerfil(appConfig.adminProfile)) return;
@@ -79,7 +79,7 @@ angular.module('app.documentos')
 		$scope.refreshAttachments();
 	}
 	$scope.volver = function() {
-		if ($scope.params.url!=undefined) {
+		/*if ($scope.params.url!=undefined) {
 			var url = $scope.params.url;
 			console.log(url);
 			
@@ -89,17 +89,17 @@ angular.module('app.documentos')
 
 			console.log(url);
 			console.log($location.search());
-		}
+		}*/
 		
 		
-/*		if ($scope.params.url!=undefined) {
+		if ($scope.params.url!=undefined) {
 			window.location.href=$scope.params.url;
 			return;
 		}
 		
 		$scope.dataSel={};
 		$scope.showCategoria=false;
-		mostrarDatos();*/
+		mostrarDatos();
 		//no cambio de hoja
 	}
 	$scope.sortSrc = function(param){

@@ -5,16 +5,20 @@ angular.module('app.secciones')
 	$routeProvider.when('/secciones', {
 		controller: 'SeccionesCtrl',
 		templateUrl: 'app/partials/secciones/secciones.html'
+	}).when('/secciones/:id', {
+		controller: 'SeccionesCtrl',
+		templateUrl: 'app/partials/secciones/secciones.html'
 	});
 })
-.controller('SeccionesCtrl', function($rootScope,$scope,$http,$location,$route,$sce,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
+.controller('SeccionesCtrl', function($rootScope,$scope,$http,$location,$route,$sce,$routeParams,
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
 	
 	//compruebo que tengo el rol requerido para dicha pantalla
 	if (!$rootScope.checkAnyPerfil(appConfig.adminProfile)) return;
 	
 	var apiAttNames = dataFactoryApp(appConfig.urlBaseAttach+'/getAllAttachmentsNames/:dbid/:id', '');
 	var apiSeccion = dataFactoryApp(appConfig.urlBase+'/SECCION/:id', '');
+	var apiModeloSeccionActualizar = dataFactoryApp(appConfig.urlBaseApp+'/actualizaModeloSeccion/:dbid/:unid', '');
 	
 	$scope.apiApp = dataFactoryApp(appConfig.urlBase+'/VIEW_SECCIONES/:id', '');
 	$scope.pagination = paginationFactory();
@@ -132,6 +136,13 @@ angular.module('app.secciones')
 			}, $rootScope.overlay.errorManager);
 		});
 	}
+	
+	$scope.actualizarModeloSeccion = function(){
+		$rootScope.overlay.showOverlay();
+		apiModeloSeccionActualizar.execute({dbid:$scope.dataSel.ID_DB,unid:$scope.dataSel.ID,name:$scope.dataSel.FILENAME},{},function(data){
+			$rootScope.overlay.hideOverlay();
+		}, $rootScope.overlay.errorManager);
+	}
 
 	$scope.$watch('user.attr',function(){
 		if (!$rootScope.user || !$rootScope.user.attr) return;
@@ -151,7 +162,9 @@ angular.module('app.secciones')
 		$scope.attOptions.unid=id;
 	
 		//cargo los adjuntos del registro
+		$rootScope.overlay.showOverlay();
 		apiAttNames.getAll({dbid:dbid,id:id},function(data){
+			$rootScope.overlay.hideOverlay();
 			$scope.dataSel.attNames=data;
 			console.log(data);
 			$scope.refreshClobs();
@@ -161,15 +174,32 @@ angular.module('app.secciones')
 	$scope.refreshClobs = function(){
 		console.log("#########");
 		var id =$scope.dataSel.ID;
+		$rootScope.overlay.showOverlay();
 		apiSeccion.get({id:id},function(data){
+			$rootScope.overlay.hideOverlay();
 			$scope.TXT=data.TXT;
 			$scope.HTML=$sce.trustAsHtml(data.HTML);
 			console.log(data);
 		}, $rootScope.overlay.errorManager);
 	}
 	
-	
-	mostrarDatos();
+	if ($routeParams.id != undefined){
+		var obj = {
+				limit:10,
+				orderby:'ID',
+				order:'ASC',
+				offset: 0,
+				filter: '[ID]=='+$routeParams.id,
+				fields:'*'
+		}
+		$rootScope.overlay.showOverlay();
+		$scope.apiApp.getAll(obj, function(data) {
+			$rootScope.overlay.hideOverlay();
+			$scope.ver(data[0]);
+		}, $rootScope.overlay.errorManager);
+	} else {
+		mostrarDatos();
+	}
 	
 });
 

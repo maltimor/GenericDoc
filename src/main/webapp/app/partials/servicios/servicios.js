@@ -8,7 +8,7 @@ angular.module('app.servicios')
 	});
 })
 .controller('ServiciosCtrl', function($rootScope,$scope,$http,$location,$route,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
 	
 	//compruebo que tengo el rol requerido para dicha pantalla
 	if (!$rootScope.checkAnyPerfil(appConfig.adminProfile)) return;

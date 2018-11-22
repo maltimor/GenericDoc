@@ -1,5 +1,5 @@
 angular.module('app').factory('lupaFactory',function($rootScope,$modal,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud){
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud){
 	return function(){
 		var obj = {
 			total:0,

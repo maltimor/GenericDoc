@@ -16,7 +16,7 @@ angular.module('app.home')
 	}
 })
 .controller('HomeCtrl', function($rootScope,$scope,$http,$location,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
 	
 	var apiApp = dataFactoryApp(appConfig.urlBase+'/setPreferences/:id', '');
 	

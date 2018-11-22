@@ -8,7 +8,7 @@ angular.module('app.datosUsuario')
 	});
 })
 .controller('DatosUsuarioCtrl', function($rootScope,$scope,$http,$location,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
 
 	//compruebo que tengo el rol requerido para dicha pantalla
 	//if(!$rootScope.checkAnyRol('ADMIN')) return;

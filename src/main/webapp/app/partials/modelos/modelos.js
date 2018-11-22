@@ -8,7 +8,7 @@ angular.module('app.modelos')
 	});
 })
 .controller('ModelosCtrl', function($rootScope,$scope,$http,$location,$route,lupaFactory,$sce,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
 	
 	//compruebo que tengo el rol requerido para dicha pantalla
 	if (!$rootScope.checkAnyPerfil(appConfig.adminProfile)) return;
@@ -33,6 +33,7 @@ angular.module('app.modelos')
 	$scope.databaseSel=undefined;
 	$scope.showCategoria=false;
 	$scope.insert=false;
+	$scope.dataSeccion={};
 
 	// GESTION DE ARCHIVOS
 	$scope.attOptions={
@@ -146,7 +147,9 @@ angular.module('app.modelos')
 		$scope.attOptions.unid=id;
 	
 		//cargo los adjuntos del registro
+		$rootScope.overlay.showOverlay();
 		apiAttNames.getAll({dbid:dbid,id:id},function(data){
+			$rootScope.overlay.hideOverlay();
 			$scope.dataSel.attNames=data;
 			console.log(data);
 			$scope.refreshClobs();
@@ -164,32 +167,49 @@ angular.module('app.modelos')
 	$scope.openLupaSecciones=function(){
 		//lupaSecciones.prefilter=pre;
 		
+		$scope.dataSeccion={};
 		lupaFactory().open(lupaSecciones,function(data){
-			$scope.addSeccion(data);
+			$scope.dataSeccion.ID_SECCION=data.ID;
+			$scope.dataSeccion.NOMBRE=data.FILENAME;
 		},function(data){
+			
 		});
 	}
 	
 	$scope.addSeccion = function(item){
-		var orden = 1;
-		if ($scope.secciones && $scope.secciones.length>0) orden = $scope.secciones[$scope.secciones.length-1].ORDEN+1
+		if (item.ORDEN==undefined){
+			$rootScope.overlay.errorMessage("Debe introducir un orden");
+			return;
+		}
+		if (item.ID_SECCION==undefined){
+			$rootScope.overlay.errorMessage("Debe seleccionar ua seccion");
+			return;
+		}
 		var reg = {
 			ID_DB:$scope.dataSel.ID_DB,
 			ID_MODELO:$scope.dataSel.ID,
-			ID_SECCION:item.ID,
-			ORDEN: orden
+			ID_SECCION:item.ID_SECCION,
+			ORDEN: item.ORDEN
 		};
+		$rootScope.overlay.showOverlay();
 		apiModeloSeccion.insert(reg,function(data){
+			$rootScope.overlay.hideOverlay();
 			$scope.refreshSecciones();
 		}, $rootScope.overlay.errorManager);
 	}
 	
 	$scope.eliminarSeccion = function(ID){
+		$rootScope.overlay.showOverlay();
 		apiModeloSeccion.remove({id:ID},function(data){
+			$rootScope.overlay.hideOverlay();
 			$scope.refreshSecciones();
 		}, $rootScope.overlay.errorManager);
 	}
 
+	$scope.verSeccion = function(ID){
+		window.open('#/secciones/'+ID,'_blank');
+	}
+	
 	$scope.subir = function(index){
 		console.log(index);
 		if (index>0) {
@@ -223,7 +243,9 @@ angular.module('app.modelos')
 	}
 	
 	$scope.actualizarModelo = function(){
+		$rootScope.overlay.showOverlay();
 		apiModeloActualizar.execute({dbid:$scope.dataSel.ID_DB,unid:$scope.dataSel.ID,name:$scope.dataSel.FILENAME},{},function(data){
+			$rootScope.overlay.hideOverlay();
 			$scope.refreshAttachments();
 		}, $rootScope.overlay.errorManager);
 	}
@@ -238,7 +260,9 @@ angular.module('app.modelos')
 				fields:'*'
 			};
 		$scope.secciones = [];
+		$rootScope.overlay.showOverlay();
 		apiViewModeloSeccion.getAll(opts,function(data){
+			$rootScope.overlay.hideOverlay();
 			$scope.secciones = data;
 		}, $rootScope.overlay.errorManager);
 	}

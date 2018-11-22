@@ -8,11 +8,11 @@ app.config(function config($routeProvider,$httpProvider) {
 	});
 });
 app.controller('MainCtrl', function($scope,$rootScope,$timeout,$location,$http,$window,$filter,
-		eduOverlayFactory,dataFactoryApp) {
+		overlayFactory,dataFactoryApp) {
 	$rootScope.appConfig=appConfig;
 	$rootScope.user=appConfig.user;
 	$rootScope.entorno='???';
-	$rootScope.overlay=eduOverlayFactory.initOverlayObject($scope, $timeout);
+	$rootScope.overlay=overlayFactory.initOverlayObject($scope, $timeout);
 	//estas variables gestion el F5, primero cargo los datos del usuario y desactiva el location change
 	var cargandoDatos=true;
 	var verPerfil=undefined;

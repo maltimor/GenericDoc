@@ -9,7 +9,7 @@ angular.module('app.genericUpload').directive('genericUpload', function() {
 			options : '=',
 			onSuccess : '&'
 		},
-		controller : function($scope, $attrs, $rootScope, FileUploader, eduOverlayFactory) {
+		controller : function($scope, $attrs, $rootScope, FileUploader, overlayFactory) {
 			// GESTION DE ARCHIVOS
 			$scope.uploader = new FileUploader($scope.options);
 			

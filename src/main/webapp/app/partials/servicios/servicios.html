@@ -38,7 +38,7 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
 					</tbody>
 				</table>
 				<div class="text-center">
-					<edu-pagination data="pagination" on-change="setPageSrc()"></edu-pagination>
+					<mpagination data="pagination" on-change="setPageSrc()"></mpagination>
 			        <app-register parametro="pagination"></app-register>
 				</div>
 			</div>
@@ -66,7 +66,7 @@ pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
 					<div class="col-md-2"><label>SEPARATOR</label><input class="form-control" ng-model="dataSel.SEPARATOR"></div>
 				</div>
 				<div class="row">
-					<div class="col-md-8"></div>
+					<div class="col-md-8"><label>TEST_PARAMS</label><textarea class="form-control" ng-model="dataSel.TEST_PARAMS"></textarea></div>
 					<div class="col-md-4"><label>SELECT_FILTER</label><textarea class="form-control" ng-model="dataSel.SELECT_FILTER"></textarea></div>
 				</div>
 				<div class="row">

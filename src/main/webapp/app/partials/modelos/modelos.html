@@ -27,7 +27,7 @@
 					</tbody>
 				</table>
 				<div class="text-center">
-					<edu-pagination data="pagination" on-change="setPageSrc()"></edu-pagination>
+					<mpagination data="pagination" on-change="setPageSrc()"></mpagination>
 			        <app-register parametro="pagination"></app-register>
 				</div>
 			</div>
@@ -47,7 +47,15 @@
 					</div>
 					<div class="row">
 						<div class="col-md-4"><label>FILENAME</label><input class="form-control" ng-model="dataSel.FILENAME"></div>
-						<div class="col-md-4">
+						<div class="col-md-4"><label>DATA_EXAMPLE</label><textarea class="form-control" ng-model="dataSel.DATA_EXAMPLE"></textarea></div>
+						<div class="col-md-2"><label>ENTRADA/SALIDA</label>
+							<select class="form-control" ng-model="dataSel.ENTRADASALIDADEFECTO">
+								<option value=""></option>
+								<option value="Entrada">Entrada</option>
+								<option value="Salida">Salida</option>
+							</select>
+						</div>
+						<div class="col-md-2">
 							<br/>
 							<button type="button" class="btn btn-warning btn-xs" ng-click="actualizarModelo()">
 								<span class="glyphicon glyphicon-refresh"></span> Actualizar
@@ -55,7 +63,13 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12"><label>DATA_EXAMPLE</label><textarea class="form-control" ng-model="dataSel.DATA_EXAMPLE"></textarea></div>
+						<div class="col-md-3"><label>ESTADO DEFECTO</label><input class="form-control" ng-model="dataSel.ESTADODEFECTO"></div>
+						<div class="col-md-3"><label>ICONO DEFECTO</label><input class="form-control" ng-model="dataSel.ICONODEFECTO"></div>
+						<div class="col-md-3"><label>TIPO</label><input class="form-control" ng-model="dataSel.TIPO"></div>
+						<div class="col-md-3"><label>PARCIAL</label><input class="form-control" ng-model="dataSel.PARCIAL"></div>
+					</div>
+					<div class="row">
+						<div class="col-md-12"><label>ESTADOS</label><textarea class="form-control" ng-model="dataSel.ESTADOS"></textarea></div>
 					</div>
 					<div class="row"><br /></div>
 					
@@ -65,7 +79,23 @@
 				<div class="row">
 					<div class="col-md-2">
 						<label>SECCION</label>
-						<button class="btn btn-primary" ng-click="openLupaSecciones()">Add seccion</button>
+						<button class="btn btn-primary" ng-click="openLupaSecciones()">Selecciona seccion</button>
+					</div>
+					<div class="col-md-3">
+						<label>MODELO</label>
+						<input type=text class="form-control" disabled ng-model="dataSeccion.NOMBRE">
+					</div>
+					<div class="col-md-2">
+						<label>ID_SECCION</label>
+						<input type=text class="form-control" disabled ng-model="dataSeccion.ID_SECCION">
+					</div>
+					<div class="col-md-2">
+						<label>ORDEN</label>
+						<input type=text class="form-control" ng-model="dataSeccion.ORDEN">
+					</div>
+					<div class="col-md-1">
+						<label>_</label>
+						<button class="btn btn-primary" ng-click="addSeccion(dataSeccion)">Insertar</button>
 					</div>
 				</div>
 	
@@ -75,7 +105,7 @@
 						<table class="table table-hover">
 							<thead>
 								<tr>
-									<th class="col-md-1">ACCIONES</th>
+									<th class="col-md-2">ACCIONES</th>
 									<th class="col-md-1">FILENAME</th>
 									<th class="col-md-1">DEPENDENCIAS</th>
 									<th class="col-md-1">ORDEN</th>
@@ -84,6 +114,7 @@
 							<tbody>
 								<tr ng-repeat='item in secciones'>
 									<td ng-show="userHasAnyRol('ADMIN,ADMIN EOI')">
+										<button class="btn btn-primary" ng-click="verSeccion(item.ID_SECCION)"><i class="glyphicon glyphicon-eye-open"></i></button>
 										<button class="btn btn-danger" ng-click="eliminarSeccion(item.ID)"><i class="glyphicon glyphicon-remove"></i></button>
 									</td>
 									<td>{{item.S_FILENAME}}</td>

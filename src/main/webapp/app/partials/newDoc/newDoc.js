@@ -14,7 +14,7 @@ angular.module('app.newDoc')
 	});
 })
 .controller('NewDocCtrl', function($rootScope,$scope,$http,$location,$route,lupaFactory,$sce,$routeParams,
-		eduOverlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
+		overlayFactory,dataFactoryApp,paginationFactory,factoryCRUD,factoryPagCrud) {
 	
 	//compruebo que tengo el rol requerido para dicha pantalla
 	if (!$rootScope.checkAnyPerfil(appConfig.adminProfile)) return;
@@ -53,18 +53,13 @@ angular.module('app.newDoc')
 			//construir el array de dependencias e iniciarlo con los valores prefijados en la url
 			for(var i=0;i<data.length;i++){
 				var key = data[i].DEPENDENCIAS;
-				var valor = $scope.params[key];
-				if (valor==undefined) valor='';
-				$scope.dependencias[key]=valor;
-					
-				/*var estaba=false;
-				for(var j=0;j<$scope.dependencias.length;j++){
-					if ($scope.dependencias[j].KEY==key) estaba=true;
+				//el campo dependencias viene separado por , hay que crear una dependenicas por cada token
+				var arrKey = key.split(',');
+				for(var j=0;j<arrKey.length;j++){
+					var valor = $scope.params[arrKey[j]];
+					if (valor==undefined) valor='';
+					$scope.dependencias[arrKey[j]]=valor;
 				}
-				if (!estaba) {
-					if ($scope.params[key]!=undefined) $scope.dependencias.push({KEY:key, VALOR:$scope.params[key]});
-					else $scope.dependencias.push({KEY:key});
-				}*/
 			}
 			console.log($scope.dependencias);
 			

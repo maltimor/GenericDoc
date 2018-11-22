@@ -10,6 +10,7 @@ var appConfig={
 	urlBase: 'services/genericRestService',
 	urlBaseApp: 'services/genericDocService',
 	urlBaseAttach: 'services/attachmentService',
+	urlCasLogOut: 'URL_TO_LOGOUT',
 	adminProfile: 'ADMIN',
 	menu:[
 	  	{
